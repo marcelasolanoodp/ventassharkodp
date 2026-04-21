@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shark Ventas — Sistema de Ventas Dental</title>
+<meta name="description" content="Sistema completo de ventas para clínicas dentales. Scripts, objeciones, WhatsApp, neuromarketing y cierre.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --blue:#185FA5;--blue-dark:#0C447C;--blue-deeper:#042C53;
+  --blue-mid:#378ADD;--blue-light:#E6F1FB;--blue-pale:#F0F6FD;
+  --red:#E24B4A;--red-light:#FCEBEB;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --green:#1D9E75;--green-light:#E1F5EE;
+  --bg:#F4F7FB;--surface:#FFFFFF;--border:#D8E4F0;
+  --text:#0D1B2A;--text2:#4A5E72;--text3:#8FA3B8;
+  --sidebar-bg:#042C53;--sidebar-text:#B5D4F4;--sidebar-active:#378ADD;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* LAYOUT */
+.layout{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:250px;background:var(--sidebar-bg);padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;}
+.sidebar-logo{padding:1.5rem 1.25rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.08);}
+.logo-shark{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.logo-fin{width:36px;height:36px;background:var(--blue-mid);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.logo-name{font-size:18px;font-weight:800;color:#fff;letter-spacing:-0.02em;}
+.logo-tagline{font-size:11px;color:var(--sidebar-text);opacity:0.7;margin-top:2px;}
+.nav-section{padding:1rem 0.75rem 0;}
+.nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--sidebar-text);opacity:0.5;padding:0 0.5rem 0.4rem;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--sidebar-text);cursor:pointer;transition:all 0.15s;border:none;background:none;width:100%;text-align:left;margin-bottom:2px;}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.nav-item.active{background:var(--blue-mid);color:#fff;font-weight:500;}
+.nav-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.shortcut-section{margin-top:auto;padding:1rem 0.75rem;border-top:1px solid rgba(255,255,255,0.08);}
+.shortcut-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--sidebar-text);opacity:0.5;margin-bottom:0.5rem;padding:0 2px;}
+.shortcut-btn{display:flex;align-items:center;gap:7px;width:100%;padding:7px 10px;margin-bottom:3px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:12px;color:var(--sidebar-text);cursor:pointer;text-align:left;transition:all 0.15s;}
+.shortcut-btn:hover{background:rgba(55,138,221,0.25);border-color:var(--blue-mid);color:#fff;}
+
+/* MAIN */
+.main{flex:1;padding:2rem 2.5rem;max-width:920px;}
+.page-header{margin-bottom:2rem;}
+.page-eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue-mid);margin-bottom:6px;}
+.page-title{font-size:30px;font-weight:800;color:var(--text);letter-spacing:-0.02em;margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--text2);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* SECTION */
+.section-hdr{margin-bottom:1.5rem;}
+.section-tag{display:inline-block;background:var(--blue-light);color:var(--blue-dark);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;padding:3px 12px;border-radius:20px;margin-bottom:8px;}
+.section-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:5px;letter-spacing:-0.01em;}
+.section-desc{font-size:14px;color:var(--text2);line-height:1.6;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1rem;transition:box-shadow 0.15s;}
+.card:hover{box-shadow:0 2px 12px rgba(24,95,165,0.08);}
+.card.blue-accent{border-left:4px solid var(--blue);}
+.card.red-accent{border-left:4px solid var(--red);}
+.card.amber-accent{border-left:4px solid var(--amber);}
+.card.green-accent{border-left:4px solid var(--green);}
+.card-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.card-body{font-size:13px;color:var(--text2);line-height:1.65;}
+
+/* STEPS */
+.step-row{display:flex;gap:14px;align-items:flex-start;margin-bottom:1.25rem;position:relative;}
+.step-row:not(:last-child)::before{content:'';position:absolute;left:15px;top:34px;bottom:-10px;width:1px;background:var(--border);}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;}
+.step-body{flex:1;padding-top:5px;}
+.step-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.55;}
+.step-tip{display:inline-block;margin-top:7px;font-size:12px;background:var(--blue-light);color:var(--blue-dark);padding:3px 10px;border-radius:6px;font-weight:500;}
+
+/* SCRIPT */
+.script-box{background:var(--blue-pale);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;font-size:13px;color:var(--text);line-height:1.8;white-space:pre-wrap;font-family:'Inter',sans-serif;margin:8px 0;}
+.script-note{font-size:12px;color:var(--text3);margin-top:7px;padding-left:8px;border-left:2px solid var(--blue-mid);}
+
+/* CHAT */
+.chat-wrap{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1rem;}
+.chat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;}
+.chat-label.out{color:var(--blue-dark);text-align:right;}
+.chat-label.in{color:var(--text3);}
+.bubble{border-radius:16px;padding:10px 16px;font-size:13px;line-height:1.55;max-width:82%;margin-bottom:10px;}
+.bubble.out{background:var(--blue);color:#fff;margin-left:auto;border-bottom-right-radius:4px;}
+.bubble.in{background:var(--surface);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:4px;}
+.delay-badge{text-align:center;font-size:11px;color:var(--text3);margin:8px 0;font-style:italic;}
+
+/* OBJECIONES */
+.ob-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px;}
+.ob-q{background:var(--red-light);border-left:3px solid var(--red);border-radius:0 10px 10px 0;padding:10px 14px;}
+.ob-a{background:#EBF5FF;border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:10px 14px;}
+.ob-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;}
+.ob-lbl.q{color:var(--red);}
+.ob-lbl.a{color:var(--blue-dark);}
+.ob-text{font-size:13px;color:var(--text);line-height:1.5;}
+.ob-tip{font-size:12px;color:var(--text3);margin-top:4px;font-style:italic;}
+
+/* NEURO */
+.neuro-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px;margin-bottom:1.5rem;}
+.neuro-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center;transition:box-shadow 0.15s;}
+.neuro-card:hover{box-shadow:0 2px 10px rgba(24,95,165,0.1);}
+.neuro-icon{font-size:28px;margin-bottom:8px;}
+.neuro-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.neuro-desc{font-size:12px;color:var(--text2);line-height:1.4;}
+.neuro-frase{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;}
+.neuro-badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;margin-bottom:6px;}
+.nb-blue{background:var(--blue-light);color:var(--blue-dark);}
+.nb-red{background:var(--red-light);color:#791F1F;}
+.nb-green{background:var(--green-light);color:#085041;}
+.nb-amber{background:var(--amber-light);color:#633806;}
+
+/* CIERRE */
+.cierre-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.cierre-header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+.senales-box{background:var(--blue-light);border-radius:14px;padding:1.5rem;margin-top:1.5rem;border:1px solid #B5D4F4;}
+.senales-title{font-size:14px;font-weight:700;color:var(--blue-dark);margin-bottom:10px;}
+.senal-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;font-size:13px;color:var(--blue-dark);}
+.senal-dot{width:7px;height:7px;border-radius:50%;background:var(--blue);margin-top:5px;flex-shrink:0;}
+
+/* TIBURON */
+.tiburon-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.tiburon-header{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.tiburon-num{width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* PILLS */
+.pill-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:1.25rem;}
+.pill{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 15px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:all 0.15s;}
+.pill:hover{background:var(--blue-light);border-color:var(--blue-mid);color:var(--blue-dark);}
+.pill.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+
+/* ACTIONS */
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);}
+.action-btn{padding:9px 18px;background:none;border:1px solid var(--border);border-radius:9px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:6px;}
+.action-btn:hover{background:var(--blue-light);border-color:var(--blue-mid);color:var(--blue-dark);}
+.action-btn.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
+.action-btn.primary:hover{background:var(--blue-dark);border-color:var(--blue-dark);}
+
+/* TIP HIGHLIGHT */
+.tip-hl{background:var(--blue-light);color:var(--blue-dark);padding:1px 7px;border-radius:5px;font-weight:600;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(4,44,83,0.55);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:18px;padding:2rem;max-width:540px;width:92%;max-height:82vh;overflow-y:auto;position:relative;border:1px solid var(--border);}
+.modal-close{position:absolute;top:1rem;right:1rem;background:var(--bg);border:none;font-size:16px;cursor:pointer;color:var(--text2);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:var(--blue-light);color:var(--blue-dark);}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:1rem;color:var(--text);}
+.modal-body{font-size:14px;color:var(--text2);line-height:1.7;}
+.modal-script{background:var(--blue-pale);border:1px solid var(--border);border-radius:10px;padding:1rem;font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;margin-top:0.75rem;}
+
+/* TOPBAR mobile */
+.topbar{display:none;background:var(--sidebar-bg);padding:0.75rem 1rem;align-items:center;justify-content:space-between;}
+.menu-btn{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;}
+.topbar-name{font-size:15px;font-weight:700;color:#fff;}
+
+/* FOOTER */
+.footer{text-align:center;padding:2rem 0 1rem;font-size:12px;color:var(--text3);border-top:1px solid var(--border);margin-top:2rem;}
+
+@media(max-width:768px){
+  .layout{flex-direction:column;}
+  .sidebar{width:100%;height:auto;position:relative;display:none;}
+  .sidebar.open{display:flex;flex-direction:column;}
+  .topbar{display:flex;}
+  .main{padding:1.25rem;}
+  .ob-grid{grid-template-columns:1fr;}
+  .page-title{font-size:22px;}
+}
+@media print{
+  .sidebar{display:none !important;}
+  .topbar{display:none !important;}
+  .main{padding:1rem;max-width:100%;}
+  .tab-content{display:block !important;margin-bottom:2rem;page-break-inside:avoid;}
+  .actions{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR MOBILE -->
+<div class="topbar">
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+  <span class="topbar-name">🦈 Shark Ventas</span>
+  <span style="width:32px;"></span>
+</div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-shark">
+      <div class="logo-fin">🦈</div>
+      <div>
+        <div class="logo-name">Shark Ventas</div>
+        <div class="logo-tagline">Sistema de ventas dental</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Módulos</div>
+    <button class="nav-item active" onclick="goTab('pipeline',this)"><span class="nav-icon">🔄</span>Pipeline completo</button>
+    <button class="nav-item" onclick="goTab('telefono',this)"><span class="nav-icon">📞</span>Script telefónico</button>
+    <button class="nav-item" onclick="goTab('wsp',this)"><span class="nav-icon">💬</span>Script WhatsApp</button>
+    <button class="nav-item" onclick="goTab('objeciones',this)"><span class="nav-icon">🛡️</span>Manejo de objeciones</button>
+    <button class="nav-item" onclick="goTab('neuro',this)"><span class="nav-icon">🧠</span>Neuromarketing</button>
+    <button class="nav-item" onclick="goTab('cierre',this)"><span class="nav-icon">✅</span>Técnicas de cierre</button>
+    <button class="nav-item" onclick="goTab('tiburon',this)"><span class="nav-icon">🦈</span>Principios tiburón</button>
+  </div>
+  <div class="nav-section" style="margin-top:0.5rem;">
+    <div class="nav-label">Tratamientos</div>
+    <button class="nav-item" onclick="goTab('ortodoncia',this)"><span class="nav-icon">💎</span>Ortodoncia</button>
+  </div>
+
+  <div class="shortcut-section">
+    <div class="shortcut-label">⚡ Atajos rápidos</div>
+    <button class="shortcut-btn" onclick="openModal('doble-opcion')"><span>⚡</span>Técnica doble opción</button>
+    <button class="shortcut-btn" onclick="openModal('primer-contacto')"><span>📞</span>Script primer contacto</button>
+    <button class="shortcut-btn" onclick="openModal('es-muy-caro')"><span>💰</span>«Es muy caro»</button>
+    <button class="shortcut-btn" onclick="openModal('lo-voy-pensar')"><span>🤔</span>«Lo voy a pensar»</button>
+    <button class="shortcut-btn" onclick="openModal('seguimiento-wsp')"><span>💬</span>Seguimiento WhatsApp</button>
+    <button class="shortcut-btn" onclick="openModal('senales-compra')"><span>🎯</span>Señales de compra</button>
+    <button class="shortcut-btn" onclick="openModal('urgencia')"><span>⏰</span>Crear urgencia</button>
+    <button class="shortcut-btn" onclick="openModal('promo-brackets')"><span>💎</span>Promo brackets S/50</button>
+    <button class="shortcut-btn" onclick="openModal('wsp-ortodoncia')"><span>📲</span>WSP ortodoncia</button>
+    <button class="shortcut-btn" onclick="openModal('ob-ortodoncia')"><span>🛡️</span>Objeciones ortodoncia</button>
+    <button class="shortcut-btn" onclick="window.print()"><span>🖨️</span>Imprimir guía</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div class="page-header">
+    <div class="page-eyebrow">🦈 Shark Ventas — Guía Pro</div>
+    <div class="page-title">Sistema de Ventas Dental</div>
+    <div class="page-sub">Agendamiento · Cierre · WhatsApp · Teléfono · Objeciones · Neuromarketing · Psicología del consumidor</div>
+  </div>
+
+  <!-- PIPELINE -->
+  <div id="tab-pipeline" class="tab-content active">
+    <div class="section-hdr">
+      <span class="section-tag">Módulo 1</span>
+      <div class="section-title">Pipeline completo del paciente</div>
+      <div class="section-desc">El flujo exacto desde el primer contacto hasta que el paciente paga, vuelve y refiere. Cada etapa tiene un objetivo único — no mezcles objetivos.</div>
+    </div>
+    <div id="pipeline-steps"></div>
+    <div class="card blue-accent">
+      <div class="card-title">Métricas clave que debes medir cada semana</div>
+      <div class="card-body">Prospectos contactados → Evaluaciones agendadas → Evaluaciones realizadas → Tratamientos vendidos → Ticket promedio. Si alguna ratio cae, ahí está el cuello de botella a resolver.</div>
+    </div>
+    <div class="actions">
+      <button class="action-btn primary" onclick="goTab('telefono',document.querySelectorAll('.nav-item')[1])">Ver scripts telefónicos →</button>
+      <button class="action-btn" onclick="goTab('wsp',document.querySelectorAll('.nav-item')[2])">Ver scripts WhatsApp →</button>
+    </div>
+  </div>
+
+  <!-- TELEFONO -->
+  <div id="tab-telefono" class="tab-content">
+    <div class="section-hdr">
+      <span class="section-tag">Módulo 2</span>
+      <div class="section-title">Script de llamada telefónica</div>
+      <div class="section-desc">Estructura AIDA aplicada a ventas dentales. Cada bloque tiene un objetivo. No improvises — domina el script y luego personalízalo.</div>
+    </div>
+    <div id="telefono-cards"></div>
+    <div class="actions">
+      <button class="action-btn primary" onclick="goTab('objeciones',document.querySelectorAll('.nav-item')[3])">Ver manejo de objeciones →</button>
+      <button class="action-btn" onclick="goTab('cierre',document.querySelectorAll('.nav-item')[5])">Ver técnicas de cierre →</button>
+    </div>
+  </div>
+
+  <!-- WSP -->
+  <div id="tab-wsp" class="tab-content">
+    <div class="section-hdr">
+      <span class="section-tag">Módulo 3</span>
+      <div class="section-title">Sistema WhatsApp — flujos de mensajes</div>
+      <div class="section-desc">Selecciona el tipo de paciente y aplica el flujo exacto. Cada mensaje tiene un objetivo psicológico específico.</div>
+    </div>
+    <div class="pill-row" id="wsp-pills">
+      <div class="pill active" onclick="showWsp('frio',this)">Paciente frío</div>
+      <div class="pill" onclick="showWsp('tibio',this)">Paciente tibio</div>
+      <div class="pill" onclick="showWsp('reactivar',this)">Reactivar inactivo</div>
+      <div class="pill" onclick="showWsp('cotizo',this)">Cotizó pero no agendó</div>
+    </div>
+    <div id="wsp-frio" class="wsp-panel"></div>
+    <div id="wsp-tibio" class="wsp-panel" style="display:none;"></div>
+    <div id="wsp-reactivar" class="wsp-panel" style="display:none;"></div>
+    <div id="wsp-cotizo" class="wsp-panel" style="display:none;"></div>
+    <div class="actions">
+      <button class="action-btn primary" onclick="goTab('cierre',document.querySelectorAll('.nav-item')[5])">Ver técnicas de cierre →</button>
+    </div>
+  </div>
+
+  <!-- OBJECIONES -->
+  <div id="tab-objeciones" class="tab-content">
+    <div class="section-hdr">
+      <span class="section-tag">Módulo 4</span>
+      <div class="section-title">Manejo de objeciones</div>
+      <div class="section-desc">Una objeción no es un rechazo — es una petición de más información o seguridad. Cada objeción tiene una emoción detrás. Tu trabajo es encontrarla.</div>
+    </div>
+    <div id="ob-container"></div>
+    <div class="card amber-accent" style="margin-top:1rem;">
+      <div class="card-title">Regla de oro del manejo de objeciones</div>
+      <div class="card-body">Nunca contradigas directamente. Usa la secuencia: <span class="tip-hl">Validar → Preguntar → Redirigir</span>. "Entiendo perfectamente... ¿me permite preguntarle algo? ... Porque lo que notamos es que..."</div>
+    </div>
+    <div class="actions">
+      <button class="action-btn primary" onclick="goTab('cierre',document.querySelectorAll('.nav-item')[5])">Ver técnicas de cierre →</button>
+      <button class="action-btn" onclick="goTab('neuro',document.querySelectorAll('.nav-item')[4])">Ver neuromarketing →</button>
+    </div>
+  </div>
+
+  <!-- NEURO -->
+  <div id="tab-neuro" class="tab-content">
+    <div class="section-hdr">
+      <span class="section-tag">Módulo 5</span>
+      <div class="section-title">Neuromarketing y psicología del consumidor</div>
+      <div class="section-desc">El 95% de las decisiones de compra son subconscientes. Estos son los 6 disparadores que activan el "sí" en el cerebro del paciente.</div>
+    </div>
+    <div class="neuro-grid" id="neuro-grid"></div>
+    <div class="card blue-accent" style="margin-bottom:1rem;">
+      <div class="card-title">El principio más poderoso: aversión a la pérdida</div>
+      <div class="card-body">El cerebro humano siente el dolor de perder 2 veces más que el placer de ganar. "Lo que pierdes si no actúas" es más efectivo que "lo que ganas si actúas". Aplícalo siempre en el cierre.</div>
+    </div>
+    <div class="section-hdr" style="margin-top:1.5rem;"><div class="section-title" style="font-size:17px;">Frases de alto impacto</div></div>
+    <div id="frases-container"></div>
+    <div class="card amber-accent" style="margin-top:1rem;">
+      <div class="card-title">Técnica de proyección futura</div>
+      <div class="card-body">Haz que el paciente se vea a sí mismo ya con el resultado. "Imagínate el próximo [evento importante] sonriendo sin pensarlo dos veces..." Una vez que el cerebro lo imagina, lo quiere.</div>
+    </div>
+    <div class="actions">
+      <button class="action-btn primary" onclick="goTab('cierre',document.querySelectorAll('.nav-item')[5])">Ver técnicas de cierre →</button>
+    </div>
+  </div>
+
+  <!-- CIERRE -->
+  <div id="tab-cierre" class="tab-content">
+    <div class="section-hdr">
+      <span class="section-tag">Módulo 6</span>
+      <div class="section-title">Técnicas de cierre de venta</div>
+      <div class="section-desc">El cierre no es el final — es el momento en que ayudas al paciente a tomar una decisión que ya quiere tomar. Elige la técnica según el perfil.</div>
+    </div>
+    <div id="cierre-container"></div>
+    <div class="senales-box">
+      <div class="senales-title">🎯 Señales de compra — cuando aparezca una, cierra YA</div>
+      <div class="senal-item"><div class="senal-dot"></div>Pregunta por formas de pago o cuotas</div>
+      <div class="senal-item"><div class="senal-dot"></div>Pregunta cuánto dura el tratamiento</div>
+      <div class="senal-item"><div class="senal-dot"></div>Empieza a hablar en futuro ("cuando me ponga los brackets...")</div>
+      <div class="senal-item"><div class="senal-dot"></div>Pide ver fotos de resultados anteriores</div>
+      <div class="senal-item"><div class="senal-dot"></div>Pregunta si puede traer a alguien a la cita</div>
+      <div class="senal-item"><div class="senal-dot"></div>Asiente repetidamente o se inclina hacia adelante</div>
+      <div class="senal-item"><div class="senal-dot"></div>Pregunta cuándo podría empezar</div>
+    </div>
+    <div class="actions">
+      <button class="action-btn primary" onclick="goTab('tiburon',document.querySelectorAll('.nav-item')[6])">Ver principios tiburón →</button>
+    </div>
+  </div>
+
+  <!-- TIBURON -->
+  <div id="tab-tiburon" class="tab-content">
+    <div class="section-hdr">
+      <span class="section-tag">Módulo 7</span>
+      <div class="section-title">Los 7 principios del vendedor tiburón</div>
+      <div class="section-desc">La mentalidad que diferencia a los mejores del promedio. No son técnicas — son formas de pensar que se convierten en resultados consistentes.</div>
+    </div>
+    <div id="tiburon-container"></div>
+  </div>
+
+  <!-- ORTODONCIA -->
+  <div id="tab-ortodoncia" class="tab-content">
+    <div class="section-hdr">
+      <span class="section-tag">Tratamiento — Ortodoncia</span>
+      <div class="section-title">Brackets Metálicos — Odontoz Prime 💎</div>
+      <div class="section-desc">Scripts, precios, pasos del proceso y manejo de objeciones específicos para cerrar ortodoncia con la promoción vigente.</div>
+    </div>
+    <div style="background:var(--blue);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;color:#fff;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;opacity:0.75;margin-bottom:8px;">Super Promoción Activa 🔥</div>
+      <div style="font-size:22px;font-weight:800;margin-bottom:12px;">Brackets Metálicos desde S/ 50</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px;">
+        <div style="background:rgba(255,255,255,0.13);border-radius:10px;padding:10px 14px;"><div style="font-size:11px;opacity:0.75;margin-bottom:3px;">Cuota inicial</div><div style="font-size:20px;font-weight:700;">S/ 50</div></div>
+        <div style="background:rgba(255,255,255,0.13);border-radius:10px;padding:10px 14px;"><div style="font-size:11px;opacity:0.75;margin-bottom:3px;">Instalación (único)</div><div style="font-size:20px;font-weight:700;">S/ 150</div></div>
+        <div style="background:rgba(255,255,255,0.13);border-radius:10px;padding:10px 14px;"><div style="font-size:11px;opacity:0.75;margin-bottom:3px;">Mensualidades</div><div style="font-size:20px;font-weight:700;">S/ 100/mes</div></div>
+        <div style="background:rgba(255,255,255,0.13);border-radius:10px;padding:10px 14px;"><div style="font-size:11px;opacity:0.75;margin-bottom:3px;">Consulta + evaluación</div><div style="font-size:20px;font-weight:700;">S/ 30</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px 14px;font-size:13px;"><span style="font-weight:700;">🎁 BONO:</span> Limpieza dental GRATIS al iniciar. Incluye brackets + modelos de estudio + ligas separadoras.</div>
+    </div>
+    <div style="margin-bottom:1.5rem;"><div class="section-tag" style="margin-bottom:1rem;">Los 6 pasos del proceso</div><div id="orto-steps"></div></div>
+    <div style="margin-bottom:1.5rem;"><div class="section-tag" style="margin-bottom:1rem;">Scripts de venta para ortodoncia</div>
+      <div class="card blue-accent"><div class="card-title">Script telefónico — primer contacto ortodoncia</div><div class="script-box">&quot;Hola [nombre], soy [nombre] de Odontoz Prime. Me comentaste que te interesa alinearte los dientes. ¿Tienes 3 minutitos?&quot;
+
+[Escucha qué le molesta más de su sonrisa]
+
+&quot;Perfecto. Tenemos ahora una promoción muy accesible: empiezas con solo S/ 50 de cuota inicial, instalación S/ 150 una sola vez, y S/ 100 al mes. ¡Y limpieza dental GRATIS!
+
+¿Te gustaría que el doctor te evalúe sin compromiso? La consulta es solo S/ 30 y saldrás con tu plan exacto.&quot;</div><div class="script-note">Si preguntan el precio antes — dales la promo directo. Es tu arma más fuerte, no la escondas.</div></div>
+      <div class="card blue-accent"><div class="card-title">Script WhatsApp — mensaje con la promo listo para copiar</div><div class="script-box">Hola [nombre]! 😊 Te cuento sobre nuestra promo de brackets:
+
+💎 BRACKETS METÁLICOS — Odontoz Prime
+✅ Cuota inicial: S/ 50
+✅ Instalación: S/ 150 (pago único)
+✅ Mensualidades: S/ 100/mes
+🎁 Limpieza dental GRATIS al iniciar
+📋 Incluye: brackets + modelos + ligas separadoras
+
+El primer paso es consulta + evaluación completa (S/ 30), donde el doctor te da tu plan personalizado.
+
+¿Te agendo esta semana? ¿Te queda mejor el [día] o el [día]? 📅</div><div class="script-note">Envía DESPUÉS de conectar brevemente. Nunca como primer mensaje en frío.</div></div>
+      <div class="card amber-accent"><div class="card-title">Argumento del costo total — para pacientes que calculan</div><div class="script-box">&quot;Si el tratamiento dura 18 meses:
+S/ 30 (evaluación) + S/ 50 (inicio) + S/ 150 (instalación) + S/ 1,800 (18 controles)
+= S/ 2,030 en total
+
+Son menos de S/ 113 al mes por transformar tu sonrisa para siempre. ¿Vale la pena?&quot;</div></div>
+    </div>
+    <div style="margin-bottom:1.5rem;"><div class="section-tag" style="margin-bottom:1rem;">Objeciones específicas de ortodoncia</div><div id="orto-objeciones"></div></div>
+    <div class="card green-accent"><div class="card-title">🧠 Frase de cierre con neuromarketing</div><div class="card-body" style="margin-bottom:10px;">Proyección futura + aversión a pérdida juntos:</div><div class="script-box">&quot;Imagínate en 18 meses mirándote al espejo con los dientes perfectamente alineados. Esa sonrisa que hoy te incomoda, convertida en tu mayor seguridad.
+
+Y todo empezó con solo S/ 50.
+
+¿Empezamos esta semana o la siguiente?&quot;</div></div>
+    <div class="actions">
+      <button class="action-btn primary" onclick="openModal('promo-brackets')">Ver promo completa ↗</button>
+      <button class="action-btn" onclick="openModal('wsp-ortodoncia')">WSP listo para copiar ↗</button>
+      <button class="action-btn" onclick="openModal('ob-ortodoncia')">Todas las objeciones ↗</button>
+    </div>
+  </div>
+  <div class="footer">Shark Ventas · Sistema de Ventas Dental · Mentalidad Tiburón 🦈</div>
+</main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+}
+function goTab(id,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('sidebar').classList.remove('open');
+}
+function showWsp(type,el){
+  document.querySelectorAll('.wsp-panel').forEach(p=>p.style.display='none');
+  document.getElementById('wsp-'+type).style.display='block';
+  document.querySelectorAll('#wsp-pills .pill').forEach(p=>p.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+
+/* ---------- DATA ---------- */
+const pipelineSteps=[
+  {title:'Primer contacto — captura el dolor',desc:'El paciente llama, escribe o llega. Tu única meta: descubrir SU dolor y crear conexión emocional. Nada de precios aún. Pregunta: ¿qué le molesta más? ¿desde cuándo? ¿cómo afecta su vida?',tip:'Meta: que hable el 70% del tiempo. Tú escuchas.'},
+  {title:'Diagnóstico + propuesta de valor emocional',desc:'Presenta el tratamiento conectado a su sueño, no al procedimiento técnico. "Esto te permitirá volver a comer sin dolor y recuperar tu confianza" en lugar de "este implante dura 20 años".',tip:'Usa sus propias palabras al presentar el beneficio.'},
+  {title:'Ancla de precio + manejo de objeción',desc:'Antes de dar el precio, ancla el valor alto primero: "Este tratamiento en otras clínicas puede costar hasta S/ 8,000... nosotros lo tenemos desde S/ X con todo incluido."',tip:'Nunca des el precio sin construir valor antes.'},
+  {title:'Agendamiento con técnica del doble cierre',desc:'No preguntes "¿quieres agendar?" — siempre ofrece dos opciones concretas. "¿Te queda mejor el martes a las 10 o el miércoles a las 3?" Nunca preguntas abiertas.',tip:'Doble opción elimina el "no sé" y activa la decisión.'},
+  {title:'Sistema de seguimiento — 5 puntos de contacto',desc:'Día 1: confirmación de cita. Día 3: recordatorio + valor. Día 7: seguimiento si no asistió. Día 15: reactivación con nueva razón. Día 30: oferta especial del mes.',tip:'El 80% de ventas se cierran entre el 5to y 12vo contacto.'},
+  {title:'Post-venta y máquina de referidos',desc:'Después del tratamiento: pide reseña de Google, pide referidos directamente. "¿Conoces a alguien que también quiera mejorar su sonrisa? Tenemos un beneficio especial para ti si nos recomiendas."',tip:'Un paciente satisfecho vale por 5 nuevos prospectos.'},
+];
+const stepsEl=document.getElementById('pipeline-steps');
+pipelineSteps.forEach((s,i)=>{
+  const d=document.createElement('div');
+  d.className='step-row';
+  d.innerHTML=`<div class="step-num">${i+1}</div><div class="step-body"><div class="step-title">${s.title}</div><div class="step-desc">${s.desc}</div><span class="step-tip">${s.tip}</span></div>`;
+  stepsEl.appendChild(d);
+});
+
+const telefonoData=[
+  {accent:'blue-accent',title:'Apertura — los primeros 8 segundos son todo',script:'"Hola [nombre], soy [tu nombre] de Clínica Shark Ventas. Te llamo porque hace unos días nos contactaste interesado/a en mejorar tu sonrisa. ¿Tienes 3 minutitos ahora?"',note:'Pedir permiso activa la reciprocidad. El 92% dice que sí. Nunca empieces vendiendo.'},
+  {accent:'blue-accent',title:'Descubrimiento — haz que hable él/ella',script:'"Cuéntame, ¿qué es lo que más te molesta ahora mismo de tu sonrisa o de tus dientes?"\n\n[Escucha. No interrumpas. Anota sus palabras exactas.]\n\n"¿Y eso cuánto tiempo llevas así?"\n"¿Cómo te ha afectado eso en tu día a día?"\n"¿Has intentado algo antes para solucionarlo?"',note:'Técnica espejo: repite sus mismas palabras. "Entiendo que llevas 2 años sin poder comer bien sin dolor..."'},
+  {accent:'blue-accent',title:'Presentación — beneficio emocional primero',script:'"Mira [nombre], basándome en lo que me dices, lo que necesitas es [tratamiento]. Esto te va a permitir [beneficio emocional que ÉL mencionó]. ¿Suena como lo que buscas?"',note:'Usa exactamente las palabras que usó el paciente. El cerebro reconoce sus propias palabras como verdad.'},
+  {accent:'blue-accent',title:'Ancla de precio antes de revelar el costo',script:'"Este tratamiento en otras clínicas puede costar entre S/ 5,000 y S/ 10,000. Nosotros lo tenemos desde S/ [precio] con [diferenciadores incluidos]."',note:'El ancla hace que tu precio real parezca razonable por contraste.'},
+  {accent:'blue-accent',title:'Agendamiento — técnica de doble opción',script:'"Perfecto. Para que el doctor te evalúe sin ningún costo y te dé un plan personalizado... ¿te queda mejor esta semana el jueves a las 11 o el viernes a las 4?"\n\n[Si duda]: "La evaluación es completamente gratuita y sin compromiso. Solo 30 minutos."',note:''},
+  {accent:'red-accent',title:'Versión express — para quien odia llamar (90 segundos)',script:'"Hola [nombre], soy [nombre] de Clínica [X]. Vi que te interesó [tratamiento]. Solo te llamo para contarte que esta semana tenemos evaluaciones gratuitas sin ningún compromiso. ¿Te anoto para el [día]?"',note:'Si prefieren no llamar → redirige a WhatsApp. No fuerces el canal.'},
+  {accent:'amber-accent',title:'Cierre de llamada si no agenda hoy',script:'"Entiendo perfectamente. ¿Te parece bien que te escriba por WhatsApp la información del tratamiento para que la puedas revisar con calma y la compartas con quien necesites?"',note:'Nunca cortes sin tener el siguiente paso definido.'},
+];
+const telefonoEl=document.getElementById('telefono-cards');
+telefonoData.forEach(t=>{
+  const d=document.createElement('div');
+  d.className=`card ${t.accent}`;
+  d.innerHTML=`<div class="card-title">${t.title}</div><div class="script-box">${t.script}</div>${t.note?`<div class="script-note">${t.note}</div>`:''}`;
+  telefonoEl.appendChild(d);
+});
+
+/* WSP DATA */
+const wspData={
+  frio:{label:'Paciente que escribió por primera vez pero lleva más de 24h sin responder.',msgs:[
+    {type:'out',delay:null,label:'Tú — mensaje 1 (conectar y descubrir dolor)',text:'Hola [nombre] 👋 Soy [nombre] de Clínica Shark Ventas. Vi que te interesaste en mejorar tu sonrisa. Cuéntame, ¿qué es lo que más quisieras cambiar?'},
+    {type:'out',delay:'— Sin respuesta en 24h —',label:'Mensaje 2 (reducir fricción)',text:'Entiendo que estás ocupado/a 😊 Solo quería contarte que esta semana tenemos evaluaciones GRATUITAS disponibles, sin ningún compromiso. ¿Te interesa reservar la tuya?'},
+    {type:'out',delay:'— Sin respuesta en 48h —',label:'Mensaje 3 (prueba social + escasez)',text:'Esta semana ya agendamos 8 pacientes para evaluación. Quedan solo 3 espacios disponibles. ¿Quieres que te reserve uno?'},
+    {type:'out',delay:'— Sin respuesta en 72h —',label:'Mensaje 4 (oferta de valor adicional)',text:'Para los que agendan esta semana, incluimos limpieza dental de cortesía como bienvenida. Solo 2 cupos disponibles.'},
+    {type:'out',delay:'— Último intento —',label:'Mensaje 5 — cierre definitivo (doble opción)',text:'Hola [nombre], ¿te queda mejor mañana a las 10am o el jueves a las 4pm para tu evaluación gratuita?'},
+  ]},
+  tibio:{label:'Paciente que vino a evaluación, recibió su plan pero no ha confirmado inicio.',msgs:[
+    {type:'out',delay:null,label:'Mensaje 1 (seguimiento cálido sin presión)',text:'Hola [nombre], ¿cómo estás? Quería saber si tuviste oportunidad de pensar en el plan que te presentó el doctor 😊'},
+    {type:'out',delay:'— Al día siguiente —',label:'Mensaje 2 (refuerzo emocional)',text:'Recuerda que con [tratamiento] podrás [beneficio específico que mencionó]. Muchos pacientes nos dicen que desearían haberlo hecho antes.'},
+    {type:'out',delay:'— Día 3 —',label:'Mensaje 3 (descubrir objeción oculta)',text:'¿Hay algo que te genere duda o que te esté frenando para empezar? Con mucho gusto te ayudo a resolverlo 🙏'},
+    {type:'out',delay:'— Día 5 —',label:'Mensaje 4 (eliminar barrera económica)',text:'Por cierto, tenemos opciones de pago en cuotas sin interés. Muchos pacientes financian su tratamiento desde S/ [monto] al mes. ¿Te lo detallo?'},
+    {type:'out',delay:'— Día 7 —',label:'Cierre final (doble opción)',text:'¿Empezamos la próxima semana? ¿Te va mejor el lunes o el miércoles?'},
+  ]},
+  reactivar:{label:'Paciente que no ha venido hace 3 a 12 meses.',msgs:[
+    {type:'out',delay:null,label:'Mensaje 1 (reconexión humana, no ventas)',text:'Hola [nombre]! Soy [nombre] de Clínica Shark Ventas. Ha pasado un tiempo y quería saber cómo estás 😊 ¿Todo bien con tu salud dental?'},
+    {type:'out',delay:'— Si responde positivo —',label:'Mensaje 2 (urgencia médica + valor)',text:'Qué bueno saberlo! Este mes tenemos un chequeo preventivo especial para pacientes que ya nos conocen. Detectar pequeños problemas a tiempo puede ahorrarte mucho dinero y molestias después.'},
+    {type:'out',delay:'— Cierre —',label:'Mensaje 3 — agendamiento',text:'¿Te agendo para esta semana? Tengo disponibilidad el [día] a las [hora] o el [día] a las [hora]. ¿Cuál te queda mejor?'},
+  ]},
+  cotizo:{label:'Paciente que pidió cotización pero lleva días sin responder.',msgs:[
+    {type:'out',delay:null,label:'Mensaje 1 (check-in directo)',text:'Hola [nombre], ¿pudiste revisar la cotización que te enviamos? Quería asegurarme de que no te quedara ninguna duda 😊'},
+    {type:'out',delay:'— Si no responde o dice "lo estoy viendo" —',label:'Mensaje 2 (ancla de comparación)',text:'Muchos pacientes que comparan precios terminan eligiéndonos porque incluimos [diferenciador clave]. ¿Quieres que te explique exactamente qué está incluido en nuestra propuesta?'},
+    {type:'out',delay:'— Día 4 —',label:'Mensaje 3 (urgencia con oferta temporal)',text:'Esta semana tenemos un descuento especial vigente hasta el [fecha]. Si decides esta semana, puedes acceder a él. ¿Te interesa?'},
+    {type:'out',delay:'— Cierre final —',label:'Mensaje 4 — doble opción',text:'¿Empezamos? ¿Te va mejor el [día] o el [día] para la primera cita?'},
+  ]},
+};
+Object.keys(wspData).forEach(key=>{
+  const panel=document.getElementById('wsp-'+key);
+  const data=wspData[key];
+  let html=`<div class="card blue-accent" style="margin-bottom:1rem;"><div class="card-body" style="font-size:13px;">${data.label}</div></div><div class="chat-wrap">`;
+  data.msgs.forEach(m=>{
+    if(m.delay) html+=`<div class="delay-badge">${m.delay}</div>`;
+    html+=`<div class="chat-label out">${m.label}</div><div class="bubble out">${m.text}</div>`;
+  });
+  html+='</div>';
+  panel.innerHTML=html;
+});
+
+const objeciones=[
+  {q:'«Es muy caro, no tengo ese dinero»',a:'«Entiendo. ¿Si lo pudiéramos dividir en cuotas pequeñas mensuales, sería más manejable? Tenemos desde S/ [X] al mes.»',tip:'Nunca defiendas el precio. Cambia el encuadre a cuotas manejables.'},
+  {q:'«Lo voy a pensar»',a:'«Claro, es una decisión importante. ¿Qué información específica te falta para decidir hoy? Prefiero ayudarte a decidir bien ahora.»',tip:'"Lo voy a pensar" = objeción oculta. Búscala con preguntas.'},
+  {q:'«Tengo que consultarlo con mi esposo/a»',a:'«Por supuesto. ¿Y si hablo 5 minutos con los dos ahora mismo o te envío un resumen por WhatsApp para que lo vean juntos?»',tip:'Ofrece facilitar esa conversación. No te rindas.'},
+  {q:'«En otra clínica me sale más barato»',a:'«Es posible. ¿Eso incluía [lista lo que tú incluyes]? Muchas veces el precio más bajo termina siendo más caro si hay complicaciones.»',tip:'Usa el contraste: precio bajo ahora vs costo real total después.'},
+  {q:'«Ahora no es buen momento»',a:'«Entiendo. ¿Me permite preguntarle cuándo sería un buen momento? Cada mes que espera, el problema puede avanzar.»',tip:'Usa la urgencia médica real para dar perspectiva.'},
+  {q:'«Tengo miedo al dentista»',a:'«Eso es más común de lo que crees y lo entendemos. Trabajamos con técnicas de mínimo dolor. ¿Quieres que te cuente cómo lo manejamos?»',tip:'Convierte el miedo en una razón para venir, no para evitarlo.'},
+  {q:'«No tengo tiempo para las citas»',a:'«Muchos de nuestros pacientes trabajan. ¿Tienes disponibilidad temprano en la mañana o en la tarde? Nos adaptamos a tu horario.»',tip:'El horario no es el problema real. Elimina la fricción logística.'},
+  {q:'«Quiero pensarlo un poco más»',a:'«¿Qué información te haría sentir más seguro/a para decidir? Puedo enviarte resultados de pacientes similares a ti.»',tip:'Prueba social reduce la incertidumbre. Tiene dudas no resueltas.'},
+];
+const obEl=document.getElementById('ob-container');
+objeciones.forEach(ob=>{
+  const d=document.createElement('div');
+  d.style.marginBottom='1.25rem';
+  d.innerHTML=`<div class="ob-grid"><div class="ob-q"><div class="ob-lbl q">Objeción del paciente</div><div class="ob-text">${ob.q}</div></div><div class="ob-a"><div class="ob-lbl a">Respuesta tiburón</div><div class="ob-text">${ob.a}</div></div></div><div style="font-size:12px;color:var(--text3);padding:4px 6px;font-style:italic;">🧠 Clave: ${ob.tip}</div>`;
+  obEl.appendChild(d);
+});
+
+const neuroData=[
+  {icon:'⚓',title:'Efecto ancla',desc:'Muestra el precio alto primero. Todo lo que venga después parecerá menor.'},
+  {icon:'⏰',title:'Escasez',desc:'"Quedan 2 cupos esta semana" dispara urgencia real en el cerebro.'},
+  {icon:'👥',title:'Prueba social',desc:'"15 pacientes se hicieron esto el mes pasado" elimina el miedo.'},
+  {icon:'🎁',title:'Reciprocidad',desc:'Evaluación gratis = el paciente se siente en deuda positiva contigo.'},
+  {icon:'🔮',title:'Proyección futura',desc:'Haz que visualice el resultado antes de comprar. El cerebro no distingue.'},
+  {icon:'😨',title:'Aversión a pérdida',desc:'"Esperar te costará más" pesa 2x más que "ahorrarás dinero".'},
+];
+const neuroEl=document.getElementById('neuro-grid');
+neuroData.forEach(n=>{
+  const d=document.createElement('div');
+  d.className='neuro-card';
+  d.innerHTML=`<div class="neuro-icon">${n.icon}</div><div class="neuro-title">${n.title}</div><div class="neuro-desc">${n.desc}</div>`;
+  neuroEl.appendChild(d);
+});
+
+const frases=[
+  {badge:'nb-blue',label:'Proyección futura',text:'"Imagínate el próximo verano sonriendo sin pensarlo dos veces, sin esconder la boca. Eso es exactamente lo que te ofrecemos."'},
+  {badge:'nb-red',label:'Aversión a pérdida',text:'"Cada mes que esperas, el problema avanza. Lo que hoy cuesta S/ 3,000 puede costar S/ 8,000 en un año. La salud dental no espera."'},
+  {badge:'nb-green',label:'Prueba social',text:'"El mes pasado 23 pacientes empezaron su tratamiento aquí. ¿Quieres ver algunos de sus resultados antes de decidir?"'},
+  {badge:'nb-amber',label:'Autoridad',text:'"El Dr. [nombre] lleva 15 años haciendo esto y ha transformado más de 2,000 sonrisas. Estás en las mejores manos."'},
+];
+const frasesEl=document.getElementById('frases-container');
+frases.forEach(f=>{
+  const d=document.createElement('div');
+  d.className='neuro-frase';
+  d.innerHTML=`<span class="neuro-badge ${f.badge}">${f.label}</span><div style="font-size:13px;color:var(--text);line-height:1.65;font-style:italic;">${f.text}</div>`;
+  frasesEl.appendChild(d);
+});
+
+const cierres=[
+  {title:'Cierre de doble opción',badge:'nb-blue',badgeText:'Recomendado siempre',desc:'Nunca preguntes "¿quieres agendar?". Siempre dos opciones concretas.',script:'"¿Te queda mejor el martes a las 11 o el jueves a las 4 para tu evaluación?"'},
+  {title:'Cierre por urgencia real',badge:'nb-red',badgeText:'Alta efectividad',desc:'Usa la realidad médica y de agenda, nunca presión inventada.',script:'"El doctor tiene agenda muy limitada esta semana. Si quieres asegurar tu espacio, necesito confirmarlo hoy."'},
+  {title:'Cierre por eliminación de riesgo',badge:'nb-blue',badgeText:'Para indecisos',desc:'Elimina el miedo a tomar la decisión equivocada.',script:'"Si después de la evaluación decides no hacerlo, no hay ningún compromiso. Pero si no vienes, nunca sabrás si era la solución."'},
+  {title:'Cierre Benjamin Franklin',badge:'nb-amber',badgeText:'Para analíticos',desc:'Haz que el paciente liste pros y contras contigo. Los pros siempre ganan.',script:'"Hagamos algo juntos: anotemos las razones para hacerlo y las razones para esperar. Vemos qué pesa más."'},
+  {title:'Cierre por resumen de valor',badge:'nb-green',badgeText:'Antes del precio',desc:'Resume todo el valor incluido antes de mencionar el precio final.',script:'"Esto incluye: evaluación completa, plan personalizado, seguimiento mensual, garantía y facilidades de pago. Todo eso por S/ [X]. ¿Empezamos?"'},
+];
+const cierreEl=document.getElementById('cierre-container');
+cierres.forEach(c=>{
+  const d=document.createElement('div');
+  d.className='cierre-card';
+  d.innerHTML=`<div class="cierre-header"><div class="card-title" style="margin:0;">${c.title}</div><span class="neuro-badge ${c.badge}">${c.badgeText}</span></div><div class="card-body">${c.desc}</div><div class="script-box" style="margin-top:10px;">${c.script}</div>`;
+  cierreEl.appendChild(d);
+});
+
+const principios=[
+  {title:'El tiburón nunca espera permiso',tagline:'Toma la iniciativa siempre',desc:'No esperes a que el paciente te llame. Haz tú el seguimiento. El que propone controla la conversación.',frase:'"Hola, soy [nombre] de Shark Ventas. Quería asegurarme de que tuvieras toda la información para tomar la mejor decisión."'},
+  {title:'Vende el resultado, no el tratamiento',tagline:'El paciente compra cómo se va a sentir',desc:'Nadie quiere "implantes dentales". Quieren comer sin dolor, reír sin vergüenza, sentirse seguros. Conecta siempre con el beneficio emocional real.',frase:'"Imagínate poder sonreír en esa reunión importante sin pensarlo dos veces..."'},
+  {title:'El precio no es el problema, es el valor',tagline:'Construye valor antes de hablar de precio',desc:'Cuando el paciente dice "es caro", en realidad dice "no veo suficiente valor todavía". Tu trabajo es construir valor tan sólido que el precio parezca pequeño.',frase:'"Entiendo. ¿Me permite mostrarle exactamente lo que incluye y por qué vale cada sol?"'},
+  {title:'Escucha más de lo que hablas',tagline:'El mejor vendedor hace las preguntas correctas',desc:'Pregunta: ¿qué le molesta más? ¿desde cuándo? ¿qué ha intentado? Esa información es tu arma de cierre. El 70% del tiempo debe hablar el paciente.',frase:'"¿Qué es lo que más le gustaría cambiar de su sonrisa?"'},
+  {title:'Crea urgencia sin presionar',tagline:'La decisión postergada es una venta perdida',desc:'Cada día que el paciente no actúa, el problema crece. Usa la urgencia médica real y los beneficios por tiempo limitado.',frase:'"Los costos de no atenderse ahora son mayores que el tratamiento mismo."'},
+  {title:'El seguimiento es el secreto',tagline:'El dinero está en el seguimiento',desc:'El 80% de las ventas se cierran entre el 5to y 12vo contacto. La mayoría abandona al 2do. No sueltes hasta tener un sí o no definitivo.',frase:'"Solo quería saber si tuvo tiempo de pensarlo. Estoy aquí para resolver cualquier duda."'},
+  {title:'Cada no te acerca al sí',tagline:'La resiliencia es el músculo número uno',desc:'Los mejores vendedores no tienen menos rechazos — tienen más tolerancia a ellos. Cada objeción es información valiosa.',frase:'"Gracias por su tiempo. ¿Puedo llamarle en un mes por si cambia de idea?"'},
+];
+const tiburonEl=document.getElementById('tiburon-container');
+principios.forEach((p,i)=>{
+  const d=document.createElement('div');
+  d.className='tiburon-card';
+  d.innerHTML=`<div class="tiburon-header"><div class="tiburon-num">${i+1}</div><div><div class="card-title" style="margin:0;">${p.title}</div><div style="font-size:12px;color:var(--text3);">${p.tagline}</div></div></div><div class="card-body" style="margin-bottom:10px;">${p.desc}</div><div class="script-box">${p.frase}</div>`;
+  tiburonEl.appendChild(d);
+});
+
+/* MODALS */
+const modals={
+  'doble-opcion':{title:'Técnica del doble cierre',body:`<p>Nunca preguntes "¿quieres agendar?" — siempre dos opciones concretas. Elimina el "no sé" y activa la decisión.</p><div class="modal-script">❌ MAL: "¿Quieres agendar una cita?"
+✅ BIEN: "¿Te queda mejor el martes a las 11 o el jueves a las 4?"
+
+Para cierre de tratamiento:
+"¿Empezamos esta semana o la siguiente?"
+"¿Prefieres pagar en una cuota o en tres?"
+"¿Quieres que reserve la cita para ti o para ti y tu pareja?"</div>`},
+  'primer-contacto':{title:'Script de primer contacto',body:`<p>Los primeros 8 segundos determinan el 80% del resultado.</p><div class="modal-script">"Hola [nombre], soy [tu nombre] de Shark Ventas. Te llamo porque hace unos días nos contactaste interesado/a en mejorar tu sonrisa. ¿Tienes 3 minutitos ahora?"
+
+[Espera respuesta]
+
+"Cuéntame, ¿qué es lo que más te molesta de tu sonrisa o tus dientes en este momento?"
+
+[Escucha. No interrumpas. Anota sus palabras.]</div>`},
+  'es-muy-caro':{title:'Respuesta a «Es muy caro»',body:`<p>Cuando dicen "es caro", en realidad dicen "no veo suficiente valor todavía".</p><div class="modal-script">Nivel 1 — cuotas:
+"Entiendo. ¿Si lo pudiéramos dividir en cuotas manejables, sería diferente? Tenemos desde S/ [X] al mes."
+
+Nivel 2 — valor vs costo:
+"¿Caro comparado con qué? ¿Con seguir sufriendo o perder más dientes que costarán el doble después?"
+
+Nivel 3 — ancla:
+"Entiendo que parece mucho. En otras clínicas solo el [componente] ya cuesta S/ [X más alto]."
+
+Nivel 4 — proyección:
+"Si divides S/ [precio] entre los [años] que durará, son S/ [X] al mes por una sonrisa completamente nueva."</div>`},
+  'lo-voy-pensar':{title:'Respuesta a «Lo voy a pensar»',body:`<p>"Lo voy a pensar" = tiene una objeción oculta que no dijo. Encuéntrala.</p><div class="modal-script">Respuesta 1 — directa:
+"¿Qué información específica te falta para decidir hoy? Prefiero ayudarte a decidir bien ahora."
+
+Respuesta 2 — objeción oculta:
+"De todo lo que hablamos hoy, ¿qué fue lo que más te generó duda?"
+
+Respuesta 3 — urgencia real:
+"Mientras lo piensas, el problema no espera. Cada mes puede complicar el tratamiento."
+
+Respuesta 4 — siguiente paso:
+"¿Te parece bien que te envíe la info por WhatsApp para que la revises con calma?"</div>`},
+  'seguimiento-wsp':{title:'Plantilla de seguimiento WhatsApp',body:`<p>Secuencia de 5 mensajes para paciente que no ha respondido.</p><div class="modal-script">Día 1:
+"Hola [nombre] 👋 Soy [nombre] de Shark Ventas. Vi que te interesaste en [tratamiento]. ¿Qué es lo que más quisieras cambiar?"
+
+Día 2:
+"Entiendo que estás ocupado/a. Esta semana tenemos evaluaciones GRATUITAS. ¿Te interesa reservar la tuya?"
+
+Día 3:
+"Ya agendamos varios pacientes esta semana. Quedan pocos espacios. ¿Te reservo uno?"
+
+Día 4:
+"Para quienes agendan esta semana, incluimos limpieza dental de cortesía."
+
+Día 5:
+"¿Te queda mejor mañana a las 10am o el jueves a las 4pm para tu evaluación gratuita?"</div>`},
+  'senales-compra':{title:'Señales de compra — cierra cuando aparezcan',body:`<p>Cuando aparezca UNA de estas señales, cierra inmediatamente.</p><div class="modal-script">Señales verbales:
+• "¿Y cuánto tiempo dura el tratamiento?"
+• "¿Tienen facilidades de pago?"
+• "¿Cuándo podría empezar?"
+• "¿Puedo traer a mi pareja a la cita?"
+• Habla en futuro: "cuando me ponga los brackets..."
+
+Señales no verbales:
+• Se inclina hacia adelante
+• Asiente repetidamente
+• Empieza a calcular o apuntar
+• Pide ver fotos de resultados
+• Pregunta por testimonios
+
+Cuando aparezca UNA → cierra ya:
+"Perfecto, ¿empezamos la próxima semana o esta misma semana?"</div>`},
+  'urgencia':{title:'Crear urgencia genuina',body:`<p>La urgencia real es más poderosa que la inventada.</p><div class="modal-script">Urgencia médica (la más poderosa):
+"Cada mes que espera, el problema avanza. Lo que hoy es simple, en 6 meses puede ser complejo y costoso."
+
+Urgencia de agenda:
+"El doctor tiene muy poca disponibilidad este mes. Necesito confirmarlo hoy."
+
+Urgencia de precio:
+"Esta semana tenemos una promoción que vence el [fecha]."
+
+Urgencia de escasez:
+"Solo tenemos 3 cupos disponibles esta semana. Ya llevamos 2 reservados."
+
+Urgencia de oportunidad:
+"Este mes incluimos [beneficio extra] sin costo para nuevos pacientes."</div>`},
+};
+/* ORTODONCIA STEPS */
+const ortoSteps=[
+  {num:1,title:'Consulta con Odontología General — S/ 30',desc:'Revisamos tu boca con un odontograma completo. Detectamos caries o infecciones y realizamos lo necesario (limpieza, curaciones o extracciones). Es IMPORTANTE que los dientes estén preparados antes de los brackets.',tip:'Vende esto como: "Te protegemos para que tu tratamiento sea seguro y exitoso."'},
+  {num:2,title:'Radiografías',desc:'Son esenciales para planificar correctamente el tratamiento. Si se requieren, recomendamos un centro de radiografías cómodo y de confianza.',tip:'Si el paciente ve esto como un costo extra: "Las radiografías son la base de un tratamiento preciso. Sin ellas, sería trabajar a ciegas."'},
+  {num:3,title:'Cita con el Ortodoncista + Cuota Inicial — S/ 50',desc:'Confirmamos que todo está listo para iniciar. Se abona la cuota inicial y se programa el siguiente paso.',tip:'Este es el momento del primer cierre. "¿Empezamos la próxima semana?"'},
+  {num:4,title:'Modelos y ligas separadoras',desc:'Tomamos los modelos de los dientes para planificar la colocación de los brackets. Las ligas separadoras crean espacio entre las muelas para facilitar la instalación.',tip:'Aviso importante al paciente: puede sentir presión los primeros días. Es completamente normal.'},
+  {num:5,title:'Instalación de brackets — S/ 150',desc:'¡Empieza el cambio! Se instalan los brackets y se dan todas las indicaciones de cuidado. Pago único.',tip:'Celebra este momento con el paciente. Es su primer paso hacia la sonrisa que quiere.'},
+  {num:6,title:'Controles mensuales — S/ 100 / mes',desc:'Ajustes, limpieza y seguimiento mensual para lograr el mejor resultado. El pago inicia al mes de la instalación.',tip:'Recuérdales que cada control los acerca más a su sonrisa final. Mantiene la motivación alta.'},
+];
+const ortoStepsEl=document.getElementById('orto-steps');
+if(ortoStepsEl){
+  ortoSteps.forEach(s=>{
+    const d=document.createElement('div');
+    d.className='step-row';
+    d.innerHTML=`<div class="step-num">${s.num}</div><div class="step-body"><div class="step-title">${s.title}</div><div class="step-desc">${s.desc}</div><span class="step-tip">${s.tip}</span></div>`;
+    ortoStepsEl.appendChild(d);
+  });
+}
+
+const ortoObjeciones=[
+  {q:'«S/ 100 al mes es mucho para mí»',a:'«Entiendo. ¿Sabías que puedes empezar hoy con solo S/ 50? El primer control lo pagas recién al mes de la instalación. Te da tiempo de organizarte.»',tip:'Fracciona la decisión. El primer pago es S/ 50, no el total.'},
+  {q:'«¿Cuánto tiempo dura el tratamiento?»',a:'«Depende de cada caso, generalmente entre 18 y 24 meses. Pero desde el primer mes ya notas el cambio. ¿Quieres que el doctor te dé un estimado exacto con tu evaluación?»',tip:'Esta es una señal de compra — quieren comprometerse. Cierra con la evaluación.'},
+  {q:'«Me da miedo que duela»',a:'«Es normal sentir algo de presión los primeros días después de cada ajuste. Es temporal y significa que está funcionando. Muchos pacientes lo describen como una molestia leve, no dolor.»',tip:'Normaliza la incomodidad y reencuádrala como señal de progreso.'},
+  {q:'«¿Por qué tengo que pagar la consulta si voy a hacer el tratamiento?»',a:'«La consulta de S/ 30 nos permite revisar que tu boca esté en condiciones óptimas antes de poner los brackets. Es por tu seguridad — no ponemos brackets sobre problemas no tratados.»',tip:'Conviértelo en un beneficio: te estamos cuidando, no cobrando de más.'},
+  {q:'«En otro lado me sale más barato»',a:'«Puede ser. ¿Ese precio incluye la limpieza dental gratis, los modelos de estudio y las ligas? Muchas veces los precios bajos no incluyen todo y terminas pagando más.»',tip:'Ancla el valor con todo lo que está incluido en la promo.'},
+  {q:'«Lo voy a pensar»',a:'«Claro. ¿Qué es lo que te genera duda — el precio, el tiempo, el procedimiento? Porque si me dices qué te frena, puedo ayudarte a resolverlo ahora.»',tip:'Busca la objeción real. "Lo pienso" siempre esconde algo.'},
+];
+const ortoObEl=document.getElementById('orto-objeciones');
+if(ortoObEl){
+  ortoObjeciones.forEach(ob=>{
+    const d=document.createElement('div');
+    d.style.marginBottom='1.25rem';
+    d.innerHTML=`<div class="ob-grid"><div class="ob-q"><div class="ob-lbl q">Objeción</div><div class="ob-text">${ob.q}</div></div><div class="ob-a"><div class="ob-lbl a">Respuesta tiburón</div><div class="ob-text">${ob.a}</div></div></div><div style="font-size:12px;color:var(--text3);padding:4px 6px;font-style:italic;">🧠 Clave: ${ob.tip}</div>`;
+    ortoObEl.appendChild(d);
+  });
+}
+
+modals['promo-brackets']={title:'Promo Brackets Metálicos — Odontoz Prime',body:`<div style="background:var(--blue-light);border-radius:10px;padding:1rem;margin-bottom:1rem;"><div style="font-size:16px;font-weight:700;color:var(--blue-dark);margin-bottom:8px;">💎 Super Promoción Brackets Metálicos</div><div style="font-size:13px;color:var(--blue-dark);line-height:1.7;">✅ Cuota inicial: <strong>S/ 50</strong><br>✅ Instalación: <strong>S/ 150</strong> (pago único)<br>✅ Mensualidades: <strong>S/ 100/mes</strong><br>🎁 Limpieza dental GRATIS al iniciar<br>📋 Incluye: brackets + modelos + ligas separadoras<br>📅 Consulta + evaluación: S/ 30</div></div><div class="modal-script">Mensaje para copiar y enviar por WhatsApp:
+
+💎 Super Promoción en Brackets Metálicos ‼️
+
+🦷 Cuota inicial: S/50
+💥 Instalación: S/150 (pago único)
+💳 Mensualidades: S/100/mes todo el tratamiento
+🎁 BONO: Limpieza dental GRATIS al iniciar
+
+✅ Incluye brackets + modelos de estudio + ligas separadoras
+📅 Consulta + evaluación completa: S/30
+
+¿Te agendo esta semana? ¿Te queda mejor el [día] a las [hora] o el [día] a las [hora]? 😊</div>`};
+
+modals['wsp-ortodoncia']={title:'WSP Ortodoncia — listo para copiar',body:`<p style="margin-bottom:0.75rem;">Copia y pega directamente en WhatsApp:</p><div class="modal-script">Hola [nombre]! 😊 Soy [nombre] de Odontoz Prime.
+
+Vi que te interesó mejorar tu sonrisa con brackets. Te cuento sobre nuestra promoción:
+
+💎 BRACKETS METÁLICOS
+✅ Cuota inicial: S/ 50
+✅ Instalación: S/ 150 (pago único)
+✅ Mensualidades: S/ 100/mes
+🎁 Limpieza dental GRATIS al iniciar
+📋 Incluye todo: brackets + modelos + ligas
+
+El primer paso es una consulta + evaluación (S/ 30) donde el doctor revisa tu boca y te da tu plan exacto.
+
+¿Te agendo esta semana? ¿Te queda mejor el [día] o el [día]? 📅</div>`};
+
+modals['ob-ortodoncia']={title:'Objeciones de ortodoncia — respuestas rápidas',body:`<div class="modal-script">«S/ 100 al mes es mucho»
+→ «Empiezas con solo S/ 50. El primer control lo pagas al mes de instalación.»
+
+«¿Cuánto dura el tratamiento?»
+→ «Entre 18 y 24 meses según tu caso. Desde el primer mes ya notas el cambio.» (señal de compra — cierra ya)
+
+«Me da miedo que duela»
+→ «Solo presión leve los primeros días después de cada ajuste. Es normal y temporal.»
+
+«¿Por qué pagar la consulta si voy a hacer el tratamiento?»
+→ «Es por tu seguridad. No ponemos brackets sobre problemas no tratados.»
+
+«En otro lado sale más barato»
+→ «¿Ese precio incluye limpieza gratis, modelos y ligas? Muchos precios bajos no incluyen todo.»
+
+«Lo voy a pensar»
+→ «¿Qué es lo que te genera duda — el precio, el tiempo, el procedimiento?»</div>`};
+
+function openModal(id){
+  const m=modals[id];
+  if(!m) return;
+  document.getElementById('modal-title').textContent=m.title;
+  document.getElementById('modal-body').innerHTML=m.body;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+</script>
+</body>
+</html>
